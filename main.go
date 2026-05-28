@@ -2,23 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"net/http"
 )
 
 func main() {
-	stationsJSON, err := LoadFromJSON("weather_data.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Printf("JSON : %d stations, %d observations\n", len(stationsJSON), compterObs(stationsJSON))
-
-}
-
-func compterObs(stations []Station) int {
-	total := 0
-	for _, s := range stations {
-		total += len(s.Observations)
-	}
-	return total
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "ok")
+	})
+	http.ListenAndServe(":8080", mux)
 }
