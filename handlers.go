@@ -51,3 +51,24 @@ func (a *App) createStation(w http.ResponseWriter, r *http.Request) {
 	a.store.Put(st)
 	writeJSON(w, http.StatusCreated, st)
 }
+
+func (a *App) updateStation(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+
+	var st Station
+	err := json.NewDecoder(r.Body).Decode(&st)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, "JSON invalide")
+		return
+	}
+
+	st.ID = id
+	existe := a.store.Has(id)
+	a.store.Put(st)
+
+	if existe {
+		writeJSON(w, http.StatusOK, st)
+	} else {
+		writeJSON(w, http.StatusCreated, st)
+	}
+}
