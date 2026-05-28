@@ -1,4 +1,4 @@
-package weather_go
+package main
 
 // station météo
 type Station struct {
@@ -19,7 +19,7 @@ type Observation struct {
 	Temperature float64
 	Conditions  string
 	Wind        Wind
-	Note        string
+	Note        *string
 }
 type Wind struct {
 	Speed        float64

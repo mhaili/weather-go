@@ -1,1 +1,1 @@
-package weather_go
+package main
