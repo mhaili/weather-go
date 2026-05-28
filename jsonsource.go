@@ -27,6 +27,7 @@ var paysVersISO = map[string]string{
 }
 
 type jsonStation struct {
+	ID           string            `json:"id"`
 	Country      string            `json:"country"`
 	AltitudeM    int               `json:"altitude_m"`
 	Location     jsonLocation      `json:"location"`
@@ -66,6 +67,7 @@ func convertJSONObservation(jo jsonObservation) Observation {
 }
 
 func convertJSONStation(js jsonStation) Station {
+
 	//en Maj avant le map
 	//iso := paysVersISO[strings.ToUpper(js.Country)]
 	iso := paysVersISO[js.Country]
@@ -76,6 +78,7 @@ func convertJSONStation(js jsonStation) Station {
 	}
 
 	return Station{
+		ID:           js.ID,
 		Country:      iso,
 		Altitude:     js.AltitudeM,
 		Location:     Coordinates{Latitude: js.Location.Latitude, Longitude: js.Location.Longitude},

@@ -16,7 +16,9 @@ func main() {
 		store.Put(s)
 	}
 	log.Printf("bootstrap : %d stations", len(stations))
+	app := &App{store: store}
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /stations", app.listStations)
 	http.ListenAndServe(":8080", mux)
 }
