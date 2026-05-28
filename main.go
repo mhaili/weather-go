@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	stations, err := LoadFromJSON("weather_data.json")
+	stationsJSON, err := LoadFromJSON("weather_data.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -16,23 +16,29 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Stations :", len(stations))
-	fmt.Println("Obs :", len(stations[0].Observations))
-	fmt.Println("XML  :", len(stationsXML), "stations")
+	fmt.Printf("JSON : %d stations, %d observations\n", len(stationsJSON), compterObs(stationsJSON))
+	fmt.Printf("XML  : %d stations, %d observations\n", len(stationsXML), compterObs(stationsXML))
 
-	s := stations[0]
-	fmt.Println(s.Country, s.Altitude, s.Location, s.DeviceModel)
-
-	x := stationsXML[0]
-	fmt.Println("\n--- XML ---")
-	fmt.Println(x.Country, x.Altitude, x.Location, x.DeviceModel)
-	fmt.Println(x.Observations[0].Temperature, x.Observations[0].Conditions, x.Observations[0].Wind, x.Observations[0].Note)
-
-	o := s.Observations[0]
-	fmt.Println(o.Temperature, o.Conditions, o.Wind, o.Note)
-
-	_, err = LoadFromXML("weather_data.xml")
-	if err != nil {
-		log.Fatal(err)
+	if len(stationsJSON) == len(stationsXML) && compterObs(stationsJSON) == compterObs(stationsXML) {
+		fmt.Println("Cohérence : OK")
+	} else {
+		fmt.Println("Cohérence : ÉCART")
 	}
+
+	_, rafale := MaxWindGust(stationsJSON)
+	fmt.Printf("Rafale la plus forte : %.1f km/h\n", rafale)
+
+	fmt.Printf("Temp. moyenne Bordeaux : %.1f °C\n", AvgTemperature(stationsJSON[0]))
+
+	fmt.Println("Stations par pays :", CountByCountry(stationsJSON))
+
+	fmt.Println("Stations FR :", len(FilterByCountry(stationsJSON, "FR")))
+}
+
+func compterObs(stations []Station) int {
+	total := 0
+	for _, s := range stations {
+		total += len(s.Observations)
+	}
+	return total
 }
