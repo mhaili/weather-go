@@ -1,14 +1,22 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 )
 
 func main() {
+	stations, err := LoadFromJSON("weather_data.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	store := NewStore()
+	for _, s := range stations {
+		store.Put(s)
+	}
+	log.Printf("bootstrap : %d stations", len(stations))
+
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "ok")
-	})
 	http.ListenAndServe(":8080", mux)
 }

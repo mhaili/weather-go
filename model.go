@@ -2,6 +2,7 @@ package main
 
 // station météo
 type Station struct {
+	ID           string
 	Country      string
 	Altitude     int
 	Location     Coordinates
